@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.dao.ShoperMapperMapper">
+    <resultMap id="BaseResultMap" type="com.qf.domain.Shop">
+        <constructor>
+            <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="shopName" javaType="java.lang.String" jdbcType="VARCHAR" />
+            <arg column="shopStatus" javaType="java.lang.String" jdbcType="VARCHAR" />
+            <arg column="shopDetail" javaType="java.lang.String" jdbcType="VARCHAR" />
+            <arg column="shopPic" javaType="java.lang.String" jdbcType="VARCHAR" />
+            <arg column="posId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="createTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+            <arg column="updateTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+
+        </constructor>
+    </resultMap>
+    <resultMap id="userAll" type="com.qf.domain.Shop">
+
+        <id column="id" property="id" />
+        <result column="shopName"  property="shopName" />
+        <result column="shopStatus" property="shopStatus" />
+        <result column="shopDetail" property="shopDetail"/>
+        <result column="shopPic" property="shopPic" />
+        <result column="posId" property="posId" />
+        <result column="createTime" property="createTime" />
+        <result column="updateTime" property="updateTime" />
+
+        <association property="shopPic" resultMap="shopAll"></association>
+    </resultMap>
+
+    <resultMap id="shopAll" type="com.qf.domain.ShopPic">
+        <id column="picid" property="id"></id>
+        <result column="path" property="path"></result>
+        <result column="status1" property="status"></result>
+    </resultMap>
+
+
+    <sql id="Base_Column_List">
+        id, shopName, shopStatus,shopDetail,shopPic,posId,createTime,updateTime
+    </sql>
+    <select id="selectShopById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from shop
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteShopById" parameterType="java.lang.Integer">
+        delete from shop
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insertShop" parameterType="com.qf.domain.Shop">
+        insert into shop (  id, shopName, shopStatus,shopDetail,shopPic,posId,createTime,updateTime
+        )
+        values (#{id,jdbcType=INTEGER}, #{shopName,jdbcType=VARCHAR}, #{shopStatus,jdbcType=VARCHAR},
+        #{shopDetail,jdbcType=VARCHAR}, #{shopPic,jdbcType=VARCHAR}, #{posId,jdbcType=INTEGER},
+         #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id"  parameterType="com.qf.domain.Shop">
+        insert into shop
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="shopName != null">
+                shopName,
+            </if>
+            <if test="shopStatus != null">
+                shopStatus,
+            </if>
+            <if test="shopDetail != null">
+                shopDetail,
+            </if>
+            <if test="shopPic != null">
+                shopPic,
+            </if>
+            <if test="posId != null">
+                posId,
+            </if>
+            <if test="createTime != null">
+                createTime,
+
+            </if>
+            <if test="updateTime != null">
+                updateTime,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="shopName != null">
+                #{shopName,jdbcType=VARCHAR},
+            </if>
+            <if test="shopStatus != null">
+                #{shopStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="shopDetail != null">
+                #{shopDetail,jdbcType=VARCHAR},
+            </if>
+            <if test="shopPic != null">
+                #{shopPic,jdbcType=VARCHAR},
+            </if>
+            <if test="posId != null">
+                #{posId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateSelective" parameterType="com.qf.domain.Shop">
+        update shop
+        <set>
+
+            <if test="shopName != null">
+                shopName=  #{shopName,jdbcType=VARCHAR},
+            </if>
+            <if test="shopStatus != null">
+                shopStatus=  #{shopStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="shopDetail != null">
+                shopDetail=  #{shopDetail,jdbcType=VARCHAR},
+            </if>
+            <if test="shopPic != null">
+                shopPic= #{shopPic,jdbcType=VARCHAR},
+            </if>
+            <if test="posId != null">
+                posId=#{posId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                createTime= #{createTime,jdbcType=TIMESTAMP},
+
+            </if>
+            <if test="updateTime != null">
+                updateTime= #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateShopById" parameterType="com.qf.domain.Shop">
+        update shop
+        set  shopName=  #{shopName,jdbcType=VARCHAR},
+       shopStatus=  #{shopStatus,jdbcType=VARCHAR},
+         shopDetail=  #{shopDetail,jdbcType=VARCHAR},
+          shopPic= #{shopPic,jdbcType=VARCHAR},
+            posId=#{posId,jdbcType=INTEGER},
+             createTime= #{createTime,jdbcType=TIMESTAMP},
+              updateTime= #{updateTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectAll" resultMap="BaseResultMap" parameterType="com.qf.domain.Shop">
+        select * from shop where 1=1
+        <if test="shopStatus!=null and shopStatus !=''">
+            and shopStatus =#{shopStatus}
+        </if>
+        limit #{startRow},#{endRow}
+    </select>
+
+    <select id="selectCount" resultType="Integer">
+        select count(*) from shop
+    </select>
+
+
+
+
+
+
+
+
+     </mapper>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.dao.ShoperMapper">
+    <resultMap id="BaseResultMap" type="com.qf.domain.Shoper">
+
+
+      
+    </resultMap>
+    <resultMap id="shopperAll" type="com.qf.domain.Shoper">
+
+        <id column="id" property="id" />
+        <result column="posName"  property="posName" />
+        <result column="posStatus" property="posStatus" />
+        <result column="posPic" property="posPic"/>
+        <result column="posTime" property="posTime" />
+        <association property="shopPic" resultMap="shopAll"></association>
+
+    </resultMap>
+    <resultMap id="shopAll" type="com.qf.domain.ShopPic">
+        <id column="picid" property="id"></id>
+        <result column="path" property="path"></result>
+        <result column="status1" property="status"></result>
+    </resultMap>
+   
+    <select id="selectShopperById" parameterType="java.lang.Integer" resultMap="shopperAll">
+
+        select p.*,s.status as status1 ,s.id as picid,s.path from shop_pos p LEFT OUTER JOIN shop_pic s ON p.posPic = s.id where  p.id=#{id}
+
+
+    </select>
+    <select id="selectShoperByName" parameterType="com.qf.domain.Shoper" resultMap="BaseResultMap">
+        select * FROM  shop_pos where posName = #{posName}
+    </select>
+    <delete id="deleteShopperById" parameterType="java.lang.Integer">
+        delete from shop_pos
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insertShopper" parameterType="com.qf.domain.Shoper">
+        insert into shop_pos (   posName, posStatus,
+        posPic, posTime
+        )
+        values (  #{posName,jdbcType=VARCHAR}, #{posStatus,jdbcType=VARCHAR},
+        #{posPic,jdbcType=INTEGER}, #{posTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <update id="updateShopperById" parameterType="com.qf.domain.Shoper">
+        update shop_pos
+        set posName = #{posName,jdbcType=VARCHAR},
+        posStatus = #{posStatus,jdbcType=VARCHAR},
+        posPic = #{posPic,jdbcType=INTEGER}
+
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+     
+    <!--通过名字查询-->
+    <select id="selectAll" parameterType="com.qf.domain.Shoper" resultMap="shopperAll">
+
+        select p.*,s.status as status1 ,s.id as picid,s.path from shop_pos p LEFT OUTER JOIN shop_pic s ON p.posPic = s.id
+        <where>
+            <if test="posName!=null and posName!=''">
+                posName =#{posName}
+            </if>
+        </where>
+        limit #{startRow},#{endRow}
+    </select>
+    <select id="selectShoperAll" parameterType="com.qf.domain.Shoper" resultMap="BaseResultMap">
+        SELECT * FROM shop_pos
+        <!--<where>-->
+            <!--<if test="posName!=null and posName!=''">-->
+                <!--posName =#{posName}-->
+            <!--</if>-->
+        <!--</where>-->
+    </select>
+    <!--查询数量-->
+    <select id="selectAllCount" parameterType="com.qf.domain.Shoper" resultType="Integer">
+        select count(*) from shop_pos
+        <where>
+            <if test="posName!=null and posName!=''">
+                and posName =#{posName}
+            </if>
+        </where>
+    </select>
+
+</mapper>
